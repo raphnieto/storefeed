@@ -1,0 +1,32 @@
+.no-sale-receipt {
+  padding: 20px 20px 28px;
+  background: #fff;
+  color: #1a1a1a;
+}
+
+.no-sale-receipt__hero-amount {
+  margin: 0 0 16px;
+  text-align: center;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.no-sale-receipt__details {
+  border-top: 2px dotted #c8c8c8;
+  padding-top: 14px;
+}
+
+.no-sale-receipt__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 1.65;
+}
+
+.no-sale-receipt__row + .no-sale-receipt__row {
+  margin-top: 2px;
+}

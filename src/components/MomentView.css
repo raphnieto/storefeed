@@ -1,0 +1,26 @@
+.moment-view {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.moment-view--slide {
+  height: calc(100% / var(--panel-count, 2));
+}
+
+.moment-view__fixed {
+  flex-shrink: 0;
+}
+
+.moment-view__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #fff;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}

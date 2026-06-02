@@ -1,0 +1,5 @@
+Fonts used in this design:
+
+Font: Bitstream Vera Sans Mono
+Author: Bitstream
+Url: http://www.fontsquirrel.com/fonts/bitstream-vera-sans-mono

@@ -1,0 +1,20 @@
+.moment-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.moment-banner--sale {
+  background: #2e9b4a;
+}
+
+.moment-banner--no-sale {
+  background: #4a4a4a;
+}

@@ -1,0 +1,42 @@
+.clip-nav {
+  display: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  flex-direction: column;
+  gap: 10px;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.clip-nav__btn {
+  pointer-events: auto;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.14);
+  padding: 0;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.clip-nav__btn:hover {
+  background: #f5f5f5;
+}
+
+.clip-nav__btn:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 768px) {
+  .clip-nav {
+    display: flex;
+    right: -58px;
+  }
+}
