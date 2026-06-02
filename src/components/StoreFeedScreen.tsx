@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type TransitionEvent,
@@ -14,12 +15,24 @@ import {
   receiptHasOverflow,
   shouldScrollReceiptOnDrag,
 } from '../utils/clipNavigationRules'
+import { prefetchFeedClips } from '../utils/videoPrefetch'
 import { MomentView } from './MomentView'
 import { ClipNavButtons } from './ClipNavButtons'
 import { AppShell } from './AppShell'
 import './StoreFeedScreen.css'
 
 const DRAG_COMMIT_PX = 80
+
+type VideoLoadMode = 'play' | 'prefetch' | 'idle'
+
+function getVideoLoadMode(
+  index: number,
+  playingIndex: number,
+): VideoLoadMode {
+  if (index === playingIndex) return 'play'
+  if (index === playingIndex + 1) return 'prefetch'
+  return 'idle'
+}
 
 type StoreFeedScreenProps = {
   moments?: FeedMoment[]
@@ -339,6 +352,14 @@ export function StoreFeedScreen({
       : `translate3d(0, ${-displayIndex * panelShare}%, 0)`
 
   const playingIndex = isAnimating ? slideIndex : activeIndex
+  const videoSources = useMemo(
+    () => moments.map((moment) => moment.videoSrc),
+    [moments],
+  )
+
+  useEffect(() => {
+    prefetchFeedClips(videoSources, playingIndex)
+  }, [videoSources, playingIndex])
 
   return (
     <AppShell
@@ -377,6 +398,7 @@ export function StoreFeedScreen({
                   clipIndex={index + 1}
                   clipTotal={clipCount}
                   isActive={index === playingIndex}
+                  videoLoadMode={getVideoLoadMode(index, playingIndex)}
                   layout="slide"
                   onClose={index === playingIndex ? onClose : undefined}
                 />

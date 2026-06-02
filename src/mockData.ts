@@ -33,11 +33,26 @@ export type NoSaleFeedMoment = FeedMomentBase & {
 
 export type FeedMoment = SaleFeedMoment | NoSaleFeedMoment
 
+const CLOUDINARY_VIDEOS = {
+  video1:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426621/video1_lzpnvs.mp4',
+  video2:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426621/video4_djkyb5.mp4',
+  video3:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426620/video5_kcfgqc.mp4',
+  video4:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426620/video3_rvesst.mp4',
+  video5:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426618/video6_mknkrl.mp4',
+  video6:
+    'https://res.cloudinary.com/dkmo86ooj/video/upload/q_auto/f_auto/v1780426619/video2_euvq31.mp4',
+} as const
+
 export const feedMoments: FeedMoment[] = [
   {
     kind: 'sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video1.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video1,
     posterSrc: '/sale-poster.jpg',
     total: 31.76,
     lineItems: [
@@ -57,7 +72,7 @@ export const feedMoments: FeedMoment[] = [
   {
     kind: 'no-sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video3.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video3,
     posterSrc: '/nosale-poster.png',
     total: 0,
     fullDuration: '00:42',
@@ -66,7 +81,7 @@ export const feedMoments: FeedMoment[] = [
   {
     kind: 'sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video2.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video2,
     posterSrc: '/nosale-poster.png',
     total: 37.17,
     lineItems: [
@@ -86,7 +101,7 @@ export const feedMoments: FeedMoment[] = [
   {
     kind: 'sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video4.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video4,
     posterSrc: '/sale-poster.jpg',
     total: 134.38,
     lineItems: [
@@ -113,7 +128,7 @@ export const feedMoments: FeedMoment[] = [
   {
     kind: 'no-sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video5.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video5,
     posterSrc: '/nosale-poster.png',
     total: 0,
     fullDuration: '00:38',
@@ -122,7 +137,7 @@ export const feedMoments: FeedMoment[] = [
   {
     kind: 'sale',
     dateLabel: 'May 28, 2026',
-    videoSrc: '/video6.mp4',
+    videoSrc: CLOUDINARY_VIDEOS.video6,
     posterSrc: '/sale-poster.jpg',
     total: 92.87,
     lineItems: [

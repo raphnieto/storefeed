@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { FeedMoment } from './mockData'
 import { CalendarScreen } from './components/CalendarScreen'
 import { StoreFeedScreen } from './components/StoreFeedScreen'
+import { clearVideoPrefetch } from './utils/videoPrefetch'
 import './styles/screenTransition.css'
 
 type AppPhase = 'calendar' | 'entering-feed' | 'feed'
@@ -46,6 +47,7 @@ export default function App() {
 
   const closeFeed = useCallback(() => {
     clearEnterTimer()
+    clearVideoPrefetch()
     setPhase('calendar')
     setFeedPayload(null)
   }, [clearEnterTimer])
@@ -64,12 +66,6 @@ export default function App() {
 
   return (
     <div className={isTransitioning ? 'app-transition-root' : 'app-feed-root'}>
-      {isTransitioning && (
-        <div className="app-transition-root__screen app-transition-root__screen--calendar-exiting">
-          <CalendarScreen onOpenFeed={openFeed} />
-        </div>
-      )}
-
       <div
         className={
           isTransitioning

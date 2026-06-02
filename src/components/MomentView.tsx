@@ -6,11 +6,14 @@ import { Receipt } from './Receipt'
 import { VideoPlayer } from './VideoPlayer'
 import './MomentView.css'
 
+type VideoLoadMode = 'play' | 'prefetch' | 'idle'
+
 type MomentViewProps = {
   moment: FeedMoment
   clipIndex: number
   clipTotal: number
   isActive?: boolean
+  videoLoadMode?: VideoLoadMode
   layout?: 'slide'
   onClose?: () => void
 }
@@ -21,6 +24,7 @@ export const MomentView = forwardRef(function MomentView(
     clipIndex,
     clipTotal,
     isActive = true,
+    videoLoadMode = 'play',
     layout = 'slide',
     onClose,
   }: MomentViewProps,
@@ -37,6 +41,8 @@ export const MomentView = forwardRef(function MomentView(
           clipIndex={clipIndex}
           clipTotal={clipTotal}
           videoSrc={moment.videoSrc}
+          posterSrc={moment.posterSrc}
+          loadMode={videoLoadMode}
           isActive={isActive}
           onClose={onClose}
         />

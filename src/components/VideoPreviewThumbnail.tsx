@@ -1,5 +1,6 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, type KeyboardEvent } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, type KeyboardEvent } from 'react'
 import type { FeedMoment } from '../mockData'
+import { VideoLoadingOverlay } from './VideoLoadingOverlay'
 import './VideoPreviewThumbnail.css'
 
 const PREVIEW_DURATION_SEC = 5
@@ -18,6 +19,7 @@ export const VideoPreviewThumbnail = forwardRef<
   VideoPreviewThumbnailProps
 >(function VideoPreviewThumbnail({ moment, onClick }, ref) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isFrameVisible, setIsFrameVisible] = useState(false)
 
   useImperativeHandle(ref, () => ({
     play: () => {
@@ -32,12 +34,17 @@ export const VideoPreviewThumbnail = forwardRef<
     const video = videoRef.current
     if (!video) return
 
+    setIsFrameVisible(false)
     video.muted = true
     video.defaultMuted = true
 
     const playWhenReady = () => {
       video.currentTime = 0
       void video.play().catch(() => {})
+    }
+
+    const onPlaying = () => {
+      setIsFrameVisible(true)
     }
 
     const onTimeUpdate = () => {
@@ -48,6 +55,7 @@ export const VideoPreviewThumbnail = forwardRef<
 
     video.addEventListener('timeupdate', onTimeUpdate)
     video.addEventListener('loadeddata', playWhenReady)
+    video.addEventListener('playing', onPlaying)
 
     if (video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
       playWhenReady()
@@ -56,6 +64,7 @@ export const VideoPreviewThumbnail = forwardRef<
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate)
       video.removeEventListener('loadeddata', playWhenReady)
+      video.removeEventListener('playing', onPlaying)
       video.pause()
     }
   }, [moment.videoSrc])
@@ -76,10 +85,25 @@ export const VideoPreviewThumbnail = forwardRef<
       onKeyDown={handleKeyDown}
       aria-label="Open feed preview"
     >
+      {!isFrameVisible && (
+        <img
+          className="video-preview-thumb__poster"
+          src={moment.posterSrc}
+          alt=""
+          aria-hidden
+        />
+      )}
+
       <video
         ref={videoRef}
-        className="video-preview-thumb__video"
+        className={[
+          'video-preview-thumb__video',
+          isFrameVisible ? 'video-preview-thumb__video--visible' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
         src={moment.videoSrc}
+        poster={moment.posterSrc}
         muted
         playsInline
         autoPlay
@@ -87,6 +111,8 @@ export const VideoPreviewThumbnail = forwardRef<
         tabIndex={-1}
         aria-hidden
       />
+
+      <VideoLoadingOverlay visible={!isFrameVisible} />
     </div>
   )
 })

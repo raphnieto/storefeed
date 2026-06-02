@@ -6,12 +6,17 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from 'react'
 import './VideoPlayer.css'
+import { VideoLoadingOverlay } from './VideoLoadingOverlay'
+
+type VideoLoadMode = 'play' | 'prefetch' | 'idle'
 
 type VideoPlayerProps = {
   dateLabel: string
   clipIndex: number
   clipTotal: number
   videoSrc: string
+  posterSrc?: string
+  loadMode?: VideoLoadMode
   isActive?: boolean
   onClose?: () => void
 }
@@ -37,6 +42,8 @@ export function VideoPlayer({
   clipIndex,
   clipTotal,
   videoSrc,
+  posterSrc,
+  loadMode = 'play',
   isActive = true,
   onClose,
 }: VideoPlayerProps) {
@@ -301,7 +308,7 @@ export function VideoPlayer({
     const video = videoRef.current
     if (!video) return
 
-    if (!isActive) {
+    if (!isActive || loadMode !== 'play') {
       clearHoldTimer()
       clearIconTimer()
       setIsScrubbing(false)
@@ -338,7 +345,7 @@ export function VideoPlayer({
 
     video.addEventListener('loadeddata', playWhenReady, { once: true })
     return () => video.removeEventListener('loadeddata', playWhenReady)
-  }, [clearHoldTimer, clearIconTimer, videoSrc, isActive])
+  }, [clearHoldTimer, clearIconTimer, videoSrc, isActive, loadMode])
 
   useEffect(
     () => () => {
@@ -387,6 +394,10 @@ export function VideoPlayer({
     }
   }
 
+  const shouldLoadVideo = isActive && loadMode !== 'idle'
+  const isPlayingClip = shouldLoadVideo && loadMode === 'play'
+  const showLoading = isPlayingClip && !isFrameVisible
+
   return (
     <div
       className={`video-player ${isScrubbing ? 'video-player--scrubbing' : ''}`}
@@ -405,38 +416,46 @@ export function VideoPlayer({
         tapStartRef.current = null
       }}
     >
-      <video
-        ref={videoRef}
-        className={[
-          'video-player__media',
-          isFrameVisible ? 'video-player__media--visible' : '',
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        src={isActive ? videoSrc : undefined}
-        playsInline
-        muted
-        preload={isActive ? 'auto' : 'none'}
-        onTimeUpdate={updateProgress}
-        onLoadedMetadata={updateProgress}
-        onPlay={syncPausedState}
-        onPause={syncPausedState}
-        onPlaying={handlePlaying}
-      />
+      <div className="video-player__media-slot">
+        {posterSrc && !isFrameVisible && (
+          <img
+            className="video-player__poster"
+            src={posterSrc}
+            alt=""
+            aria-hidden
+          />
+        )}
 
-      {isActive && (
-        <div
+        <video
+          ref={videoRef}
           className={[
-            'video-player__loading',
-            !isFrameVisible ? 'video-player__loading--visible' : '',
+            'video-player__media',
+            isFrameVisible ? 'video-player__media--visible' : '',
           ]
             .filter(Boolean)
             .join(' ')}
-          aria-live="polite"
-        >
-          Loading Feed
-        </div>
-      )}
+          src={shouldLoadVideo ? videoSrc : undefined}
+          poster={posterSrc}
+          playsInline
+          muted
+          preload={
+            loadMode === 'play'
+              ? 'auto'
+              : loadMode === 'prefetch'
+                ? 'metadata'
+                : 'none'
+          }
+          onTimeUpdate={updateProgress}
+          onLoadedMetadata={updateProgress}
+          onPlay={syncPausedState}
+          onPause={syncPausedState}
+          onPlaying={handlePlaying}
+        />
+
+        {isPlayingClip && (
+          <VideoLoadingOverlay visible={showLoading} />
+        )}
+      </div>
 
       {iconMode !== 'hidden' && !isScrubbing && (
         <div
