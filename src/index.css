@@ -29,17 +29,26 @@ body {
   min-height: 100dvh;
 }
 
+html.landing-active,
+html.landing-active body,
+html.landing-active #root {
+  height: auto;
+  min-height: 100dvh;
+  overflow: visible;
+  background: transparent;
+}
+
 @media (max-width: 767px), ((hover: none) and (pointer: coarse)) {
-  html,
-  body,
-  #root {
+  html:not(.landing-active),
+  html:not(.landing-active) body,
+  html:not(.landing-active) #root {
     height: 100dvh;
     overflow: hidden;
   }
 }
 
 @media (hover: hover) and (pointer: fine) and (min-width: 768px) {
-  body {
+  html:not(.landing-active) body {
     background: #e8e8e8;
   }
 }
