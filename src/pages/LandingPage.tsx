@@ -1,6 +1,7 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
+import { NeuralNetBackground } from '../components/NeuralNetBackground'
 import { LANDING_VIDEO_SRC } from '../landing/constants'
-import { submitDemoEmail } from '../landing/submitDemoEmail'
 import './LandingPage.css'
 
 const DISCOVER_ITEMS = [
@@ -11,12 +12,6 @@ const DISCOVER_ITEMS = [
 ] as const
 
 export function LandingPage() {
-  const [email, setEmail] = useState('')
-  const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>(
-    'idle',
-  )
-  const [errorMessage, setErrorMessage] = useState('')
-
   useEffect(() => {
     document.documentElement.classList.add('landing-active')
     document.title = 'StoreFeed — Turn store footage into more sales'
@@ -26,103 +21,55 @@ export function LandingPage() {
     }
   }, [])
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    if (status === 'submitting') return
-
-    setStatus('submitting')
-    setErrorMessage('')
-
-    const result = await submitDemoEmail(email)
-    if (result.ok) {
-      setStatus('success')
-      setEmail('')
-      return
-    }
-
-    setStatus('error')
-    setErrorMessage(result.message)
-  }
-
   return (
     <div className="landing-page">
+      <NeuralNetBackground />
+
       <div className="landing-page__inner">
         <header className="landing-page__brand">StoreFeed</header>
 
         <div className="landing-page__main">
           <div className="landing-page__layout">
-          <section className="landing-page__copy" aria-labelledby="landing-heading">
-            <h1 id="landing-heading" className="landing-page__headline">
-              Turn your store footage into more sales.
-            </h1>
-            <p className="landing-page__subhead">
-              Swipe through sales and missed opportunities.
-            </p>
+            <section className="landing-page__copy" aria-labelledby="landing-heading">
+              <h1 id="landing-heading" className="landing-page__headline">
+                Turn your store footage into more sales.
+              </h1>
+              <p className="landing-page__subhead">
+                Swipe through sales and missed opportunities.
+              </p>
 
-            <form className="landing-page__cta" onSubmit={handleSubmit} noValidate>
-              <label className="landing-page__cta-field">
-                <span className="visually-hidden">Email for demo</span>
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  placeholder="Your email"
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value)
-                    if (status === 'error') setStatus('idle')
-                  }}
-                  disabled={status === 'submitting' || status === 'success'}
-                  required
+              <div className="landing-page__cta">
+                <Link to="/preview" className="landing-page__cta-button">
+                  See it in action
+                </Link>
+              </div>
+
+              <div className="landing-page__discover">
+                <p className="landing-page__discover-label">Discover:</p>
+                <ul>
+                  {DISCOVER_ITEMS.map((item) => (
+                    <li key={item}>
+                      <CheckIcon />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </section>
+
+            <aside className="landing-page__device" aria-label="Product preview">
+              <div className="landing-page__phone">
+                <video
+                  className="landing-page__video"
+                  src={LANDING_VIDEO_SRC}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
                 />
-              </label>
-              <button
-                type="submit"
-                className="landing-page__cta-button"
-                disabled={status === 'submitting' || status === 'success'}
-              >
-                {status === 'submitting' ? 'Sending…' : 'Book a demo'}
-              </button>
-            </form>
-
-            {status === 'success' ? (
-              <p className="landing-page__form-message landing-page__form-message--success" role="status">
-                Thanks — we&apos;ll be in touch soon.
-              </p>
-            ) : null}
-
-            {status === 'error' && errorMessage ? (
-              <p className="landing-page__form-message landing-page__form-message--error" role="alert">
-                {errorMessage}
-              </p>
-            ) : null}
-
-            <div className="landing-page__discover">
-              <p className="landing-page__discover-label">Discover:</p>
-              <ul>
-                {DISCOVER_ITEMS.map((item) => (
-                  <li key={item}>
-                    <CheckIcon />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          <aside className="landing-page__device" aria-label="Product preview">
-            <div className="landing-page__phone">
-              <video
-                className="landing-page__video"
-                src={LANDING_VIDEO_SRC}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-              />
-            </div>
-          </aside>
+              </div>
+            </aside>
           </div>
         </div>
       </div>
